@@ -35,9 +35,9 @@ def get_eligible_articles():
         link_match = re.search(r'\*\*原文連結\*\*: (.+)$', content, re.MULTILINE)
         link = link_match.group(1) if link_match else ''
 
-        # 取得正文（從 --- 之後開始）
-        parts = content.split('---', 2)
-        body = parts[2].strip() if len(parts) > 2 else content
+        # 取得正文（從第一個 --- 之後開始，保留文章內的所有 ---）
+        parts = content.split('---', 1)
+        body = parts[1].strip() if len(parts) > 1 else content
 
         articles.append({
             'id': filename.replace('.md', ''),
