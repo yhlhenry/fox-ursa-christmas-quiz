@@ -98,6 +98,10 @@ const elements = {
     coordinateGrid: document.getElementById('coordinate-grid'),
     coordinateClue: document.getElementById('coordinate-clue'),
     coordinateProgress: document.getElementById('coordinate-progress'),
+    confirmOverlay: document.getElementById('confirm-overlay'),
+    confirmCoord: document.getElementById('confirm-coord'),
+    confirmYes: document.getElementById('confirm-yes'),
+    confirmNo: document.getElementById('confirm-no'),
     freezeOverlay: document.getElementById('freeze-overlay'),
     freezeTimer: document.getElementById('freeze-timer'),
     freezeClue: document.getElementById('freeze-clue'),
@@ -194,11 +198,29 @@ function generateCoordinateGrid() {
     }
 }
 
-// 處理格子點擊
+// 暫存待確認的選擇
+let pendingSelection = null;
+
+// 處理格子點擊 - 顯示確認對話框
 function handleCellClick(x, y, cell) {
     // 如果已經找到的格子，不處理
     if (cell.classList.contains('found')) return;
 
+    // 儲存待確認的選擇
+    pendingSelection = { x, y, cell };
+
+    // 顯示確認對話框
+    elements.confirmCoord.textContent = `(${x}, ${y})`;
+    elements.confirmOverlay.classList.remove('hidden');
+}
+
+// 確認選擇
+function confirmSelection() {
+    elements.confirmOverlay.classList.add('hidden');
+
+    if (!pendingSelection) return;
+
+    const { x, y, cell } = pendingSelection;
     const target = treasurePath[currentTreasureIndex];
 
     if (x === target.x && y === target.y) {
@@ -219,6 +241,14 @@ function handleCellClick(x, y, cell) {
         // 錯誤！冷凍 3 分鐘
         startFreeze();
     }
+
+    pendingSelection = null;
+}
+
+// 取消選擇
+function cancelSelection() {
+    elements.confirmOverlay.classList.add('hidden');
+    pendingSelection = null;
 }
 
 // 更新座標尋寶 UI
@@ -569,6 +599,8 @@ function retryFromStage2() {
 
 // 事件監聽
 elements.startGameBtn.addEventListener('click', startCoordinateGame);
+elements.confirmYes.addEventListener('click', confirmSelection);
+elements.confirmNo.addEventListener('click', cancelSelection);
 elements.randomBtn.addEventListener('click', startRandomGame);
 elements.manualBtn.addEventListener('click', showSelectScreen);
 elements.backBtn.addEventListener('click', goToStageComplete);
