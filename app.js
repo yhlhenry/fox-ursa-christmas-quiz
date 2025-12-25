@@ -409,12 +409,20 @@ function loadQuestion() {
     const question = article.questions[currentQuestionIndex];
 
     elements.questionText.textContent = question.question;
-    elements.options.innerHTML = '';
-    elements.feedback.classList.add('hidden');
 
+    // 完全清除舊的選項
+    elements.options.innerHTML = '';
+
+    // 隱藏並重置回饋訊息
+    elements.feedback.classList.add('hidden');
+    elements.feedback.classList.remove('correct', 'wrong');
+    elements.feedback.textContent = '';
+
+    // 建立新的選項按鈕
     question.options.forEach((option, index) => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
+        btn.disabled = false;
         btn.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
         btn.addEventListener('click', () => handleAnswer(index));
         elements.options.appendChild(btn);
