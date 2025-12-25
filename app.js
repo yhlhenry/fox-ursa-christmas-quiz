@@ -426,8 +426,8 @@ function loadArticle() {
         elements.articleContent.innerHTML = `<p><a href="${article.link}" target="_blank">📖 點此閱讀原文</a></p>`;
     }
 
-    elements.articleContent.classList.add('hidden');
-    elements.toggleArticleBtn.textContent = '展開文章 📖';
+    elements.articleContent.classList.remove('hidden');
+    elements.toggleArticleBtn.textContent = '收合文章 📕';
 
     updateProgress();
     loadQuestion();
