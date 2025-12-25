@@ -434,6 +434,18 @@ h2 {
     color: var(--dark-green);
 }
 
+.celebration .claim-prize {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--christmas-red);
+    background: linear-gradient(135deg, #fff9c4 0%, #ffe082 100%);
+    padding: 15px 25px;
+    border-radius: 10px;
+    border: 3px solid var(--christmas-gold);
+    margin: 20px 0;
+    animation: pulse 1s infinite;
+}
+
 /* 遊玩紀錄 */
 .records-section {
     margin-top: 30px;
