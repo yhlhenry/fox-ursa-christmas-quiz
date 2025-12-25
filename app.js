@@ -109,6 +109,7 @@ const elements = {
     articleList: document.getElementById('article-list'),
     selectedCount: document.getElementById('selected-count'),
     retryBtn: document.getElementById('retry-btn'),
+    retryStage2Btn: document.getElementById('retry-stage2-btn'),
     playAgainBtn: document.getElementById('play-again-btn'),
     toggleArticleBtn: document.getElementById('toggle-article'),
     articleTitle: document.getElementById('article-title'),
@@ -247,10 +248,13 @@ function startFreeze() {
     }, 1000);
 }
 
-// 秘密解凍：連按 3 次 Escape
+// 秘密解凍：連按 3 次 Escape 或連點 5 次畫面
 let escapeCount = 0;
 let escapeTimeout = null;
+let tapCount = 0;
+let tapTimeout = null;
 
+// 電腦版：按 Escape 3 次
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !elements.freezeOverlay.classList.contains('hidden')) {
         escapeCount++;
@@ -259,14 +263,31 @@ document.addEventListener('keydown', (e) => {
         escapeTimeout = setTimeout(() => { escapeCount = 0; }, 1000);
 
         if (escapeCount >= 3) {
-            // 秘密解凍！
-            clearInterval(freezeTimer);
-            elements.freezeOverlay.classList.add('hidden');
+            secretUnfreeze();
             escapeCount = 0;
-            console.log('🔓 管理員解凍');
         }
     }
 });
+
+// 手機版：連點 5 次冷凍畫面
+document.getElementById('freeze-overlay').addEventListener('click', () => {
+    tapCount++;
+
+    if (tapTimeout) clearTimeout(tapTimeout);
+    tapTimeout = setTimeout(() => { tapCount = 0; }, 2000);
+
+    if (tapCount >= 5) {
+        secretUnfreeze();
+        tapCount = 0;
+    }
+});
+
+// 秘密解凍函式
+function secretUnfreeze() {
+    clearInterval(freezeTimer);
+    elements.freezeOverlay.classList.add('hidden');
+    console.log('🔓 管理員解凍');
+}
 
 // ========== 第二關：閱讀測驗 ==========
 
@@ -527,8 +548,14 @@ function goToStart() {
     showScreen('start');
 }
 
-// 返回第一關完成畫面（從選擇文章返回）
+// 返回第一關完成畫面（從選擇文章返回，或第二關失敗重試）
 function goToStageComplete() {
+    showScreen('stageComplete');
+}
+
+// 從第二關重新開始（不需要重玩第一關）
+function retryFromStage2() {
+    displayRecords(); // 更新紀錄顯示
     showScreen('stageComplete');
 }
 
@@ -539,6 +566,7 @@ elements.manualBtn.addEventListener('click', showSelectScreen);
 elements.backBtn.addEventListener('click', goToStageComplete);
 elements.confirmBtn.addEventListener('click', startManualGame);
 elements.retryBtn.addEventListener('click', goToStart);
+elements.retryStage2Btn.addEventListener('click', retryFromStage2);
 elements.playAgainBtn.addEventListener('click', goToStart);
 elements.toggleArticleBtn.addEventListener('click', toggleArticle);
 

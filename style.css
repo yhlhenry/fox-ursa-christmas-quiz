@@ -266,12 +266,13 @@ h2 {
     max-height: 400px;
     overflow-y: auto;
     border: 1px solid #ddd;
-    line-height: 1.8;
+    line-height: 2;
     margin-top: 15px;
+    font-size: 1.1rem;
 }
 
 .article-content p {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
 .article-content h1,
@@ -689,6 +690,18 @@ h2 {
         font-size: 1rem;
         padding: 15px;
     }
+
+    /* 文章內容 RWD */
+    .article-content {
+        font-size: 1.15rem;
+        line-height: 2.2;
+        padding: 20px;
+        max-height: 350px;
+    }
+
+    .article-content h1 { font-size: 1.4rem; }
+    .article-content h2 { font-size: 1.25rem; }
+    .article-content h3 { font-size: 1.1rem; }
 
     /* 座標格子 RWD */
     .coordinate-container {
