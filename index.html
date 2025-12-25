@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小狐熊聖誕大尋寶</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❄</div>
+    </div>
+
+    <div class="container">
+        <!-- 開始畫面 -->
+        <div id="start-screen" class="screen">
+            <h1>🎄 小狐熊聖誕大尋寶 🎄</h1>
+            <div class="intro">
+                <p>歡迎來到小狐熊聖誕大尋寶！</p>
+                <p>遊戲共有兩大關卡：</p>
+                <ul>
+                    <li><strong>第一關：座標尋寶</strong> - 在 20×20 的座標平面上依序找出隱藏的寶藏</li>
+                    <li><strong>第二關：閱讀測驗</strong> - 挑戰小狐熊週記的問答</li>
+                </ul>
+                <p>準備好了嗎？點擊開始挑戰！</p>
+            </div>
+            <div class="mode-buttons">
+                <button id="start-game-btn" class="btn btn-primary">開始挑戰 🎅</button>
+            </div>
+
+            <div class="records-section">
+                <h3>📊 遊玩紀錄</h3>
+                <div id="records-list"></div>
+            </div>
+        </div>
+
+        <!-- 第一關：座標尋寶 -->
+        <div id="coordinate-screen" class="screen hidden">
+            <h1>🗺️ 第一關：座標尋寶 🗺️</h1>
+            <div class="coordinate-hint">
+                <p id="coordinate-clue">聖誕老人的藏寶圖第一個標記在原點 (0, 0)，快去找找看！</p>
+                <p id="coordinate-progress">進度：0/5</p>
+            </div>
+            <div class="coordinate-container">
+                <div class="y-axis-label">Y<br>↑</div>
+                <div id="coordinate-grid" class="coordinate-grid">
+                    <!-- 座標格子由 JS 生成 -->
+                </div>
+                <div class="x-axis-label">X →</div>
+            </div>
+            <div id="freeze-overlay" class="freeze-overlay hidden">
+                <div class="freeze-content">
+                    <h2>❄️ 被冷凍了！❄️</h2>
+                    <p>你點錯格子了！</p>
+                    <div id="freeze-clue" class="freeze-clue"></div>
+                    <p>請等待 <span id="freeze-timer">180</span> 秒後再試</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第一關完成，進入第二關 -->
+        <div id="stage-complete-screen" class="screen hidden">
+            <div class="celebration">
+                <h1>🎉 第一關完成！🎉</h1>
+                <div class="fireworks">⭐🌟⭐</div>
+                <p>太棒了！你成功找到了所有寶藏！</p>
+                <p>現在進入第二關：閱讀測驗</p>
+                <p>請選擇遊戲模式：</p>
+                <div class="mode-buttons">
+                    <button id="random-btn" class="btn btn-primary">隨機抽三篇 🎲</button>
+                    <button id="manual-btn" class="btn btn-secondary">手動選擇文章 📚</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 選擇文章畫面 -->
+        <div id="select-screen" class="screen hidden">
+            <h1>📚 選擇文章 📚</h1>
+            <p class="select-hint">請選擇 7 篇文章（已選 <span id="selected-count">0</span>/7）</p>
+            <div id="article-list" class="article-list"></div>
+            <div class="select-actions">
+                <button id="back-btn" class="btn btn-secondary">返回 ↩</button>
+                <button id="confirm-btn" class="btn btn-primary" disabled>開始遊戲 🎅</button>
+            </div>
+        </div>
+
+        <!-- 遊戲畫面 -->
+        <div id="game-screen" class="screen hidden">
+            <div class="progress-bar">
+                <div class="progress-info">
+                    <span id="article-progress">第 1/3 篇</span>
+                    <span id="question-progress">第 1/5 題</span>
+                    <span id="score">答對：0 題</span>
+                </div>
+            </div>
+
+            <div id="article-section">
+                <h2 id="article-title"></h2>
+                <button id="toggle-article" class="btn btn-secondary">展開文章 📖</button>
+                <div id="article-content" class="article-content hidden"></div>
+            </div>
+
+            <div id="question-section">
+                <div id="question-text" class="question"></div>
+                <div id="options" class="options"></div>
+            </div>
+
+            <div id="feedback" class="feedback hidden"></div>
+        </div>
+
+        <!-- 失敗畫面 -->
+        <div id="fail-screen" class="screen hidden">
+            <h1>😢 挑戰失敗 😢</h1>
+            <p>很遺憾，你答錯了！</p>
+            <p id="fail-info"></p>
+            <p>不要氣餒，再試一次吧！</p>
+            <button id="retry-btn" class="btn btn-primary">重新挑戰 🔄</button>
+        </div>
+
+        <!-- 成功畫面 -->
+        <div id="success-screen" class="screen hidden">
+            <div class="celebration">
+                <h1>🎉 恭喜過關！🎉</h1>
+                <div class="fireworks">🎆🎇🎆</div>
+                <p>太厲害了！你成功完成了小狐熊聖誕大尋寶！</p>
+                <p id="final-score"></p>
+                <p>聖誕快樂！🎄🎁</p>
+                <button id="play-again-btn" class="btn btn-primary">再玩一次 🎅</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
